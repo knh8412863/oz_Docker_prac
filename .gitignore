@@ -1,0 +1,4 @@
+worker/models/
+__pycache__/
+.DS_Store
+*.gguf
