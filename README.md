@@ -55,7 +55,7 @@
 ### 1. 컨테이너 빌드 및 백그라운드 실행
 터미널에서 아래 명령어를 입력합니다.
 ```bash
-docker compose up -d --build
+docker compose up -d --build```
 
 ### 2. API 테스트 (Streaming Response 확인)
 터미널에서 아래 `curl` 명령어를 입력하여 LLM의 실시간 답변을 확인합니다.
@@ -64,7 +64,7 @@ curl -N -X 'POST' \
   '[http://127.0.0.1:8000/chats](http://127.0.0.1:8000/chats)' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
-  -d '{"user_input": "Python이 뭐야?"}'
+  -d '{"user_input": "Python이 뭐야?"}'```
 
 ### 3. 로그 실시간 모니터링
 - **전체 로그**: `docker compose logs -f`
