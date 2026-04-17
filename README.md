@@ -31,7 +31,7 @@
 ├── .gitignore           # 대용량 모델 파일 및 캐시 제외 설정
 └── docker-compose.yml   # 4개 서비스(API, DB, Worker, Redis) 통합 설정
 
---
+---
 
 ## 🚀 주요 학습 및 업데이트 내용
 
