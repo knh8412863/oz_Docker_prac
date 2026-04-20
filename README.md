@@ -30,8 +30,8 @@
 │   └── Dockerfile       # llama-cpp-python 환경 구성
 ├── .gitignore           # 대용량 모델 파일 및 캐시 제외 설정
 └── docker-compose.yml   # 4개 서비스(API, DB, Worker, Redis) 통합 설정
-
---
+```
+---
 
 ## 🚀 주요 학습 내용
 
@@ -67,7 +67,7 @@ docker compose up -d --build
 - **대화 시작 (새 방 생성)**: `POST /conversations`
 - **메시지 전송 (대화하기)**: `POST /conversations/{id}/messages`
 - **대화 내역 조회**: `GET /conversations/{id}/messages`
-
+  
 ### 3. 로그 실시간 모니터링
 - **전체 로그**: `docker compose logs -f`
 - **Worker 추론 로그**: `docker compose logs -f worker`
