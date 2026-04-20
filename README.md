@@ -14,7 +14,7 @@
 - **Language**: Python 3.13 (FastAPI, Llama-cpp)
 - **Framework**: FastAPI (Backend), Llama-cpp-python (AI Inference)
 - **AI Model**: Llama-3.2-1B-Instruct (GGUF)
-- **Infrastructure**: Docker, Docker Compose, **Redis 8**, MySQL 8.0
+- **Infrastructure**: Docker, Docker Compose, Redis 8, MySQL 8.0
 
 
 ## 📂 프로젝트 구조
@@ -33,20 +33,25 @@
 
 --
 
-## 🚀 주요 학습 및 업데이트 내용
+## 🚀 주요 학습 내용
 
 ### 1. 비동기 메시지 큐 아키텍처 (Event-Driven)
 - **Decoupling**: API 서버가 직접 추론하지 않고 Redis 큐에 작업을 넘김으로써, 무거운 AI 작업 중에도 API 서버가 응답 불능 상태가 되지 않도록 설계.
 - **FIFO Queue**: Redis의 `LPUSH` / `BRPOP` 구조를 활용하여 요청이 들어온 순서대로 공정하게 처리.
 - **Pub/Sub Streaming**: 특정 채널을 구독(`Subscribe`)하여 Worker가 생성하는 토큰을 실시간으로 클라이언트에게 스트리밍 전송.
 
-### 2. 서비스 간 연결 (Service Discovery)
-- **Network**: 도커 컴포즈 내부 네트워크를 통해 `api` 컨테이너가 `db`라는 호스트 이름으로 MySQL에 접속하는 원리 학습.
-- **Depends On**: DB가 준비된 후 API가 실행되도록 서비스 시작 순서 제어.
+### 2. 비동기 데이터베이스 연동 (Async SQLAlchemy)
+- **aiomysql & AsyncSession**: 기존의 동기 방식이 아닌 `create_async_engine`을 활용하여 I/O 바운드 작업 시 서버 성능을 극대화하는 비동기 DB 처리 기법 학습.
+- **관계형 모델링 (1:N)**: `Conversation`과 `Message` 테이블 간의 외래키(ForeignKey) 관계를 설정하고, `Mapped` 방식을 통해 현대적인 SQLAlchemy 선언적 매핑 구현.
 
-### 3. 리소스 최적화 및 안정성
-- **Volumes**: 코드 수정 시 즉시 반영되는 Hot Reload 설정 및 DB 데이터 영속성 유지.
-- **Error Handling**: `StreamingResponse` 오타 수정 및 HTTP Method(POST) 규격 준수를 통한 디버깅 경험.
+### 3. 대화 맥락 유지 및 히스토리 관리 (Context Awareness)
+- **History Tracking**: DB에 저장된 이전 대화 내역을 조회하여 LLM에 전달함으로써, 단발성 응답이 아닌 이전 맥락을 기억하는 지속적인 대화 시스템 구축.
+- **데이터 일관성**: 사용자 메시지와 AI 응답 메시지를 각각 DB에 비동기로 저장하여 대화의 영속성을 보장.
+
+### 4. 서비스 간 연결 및 인프라 최적화
+- **Docker Network**: 컨테이너 서비스 이름(`db`, `redis` 등)을 호스트명으로 사용하여 격리된 환경 내에서 서비스 간 통신 구현.
+- **Persistence & Scaling**: 도커 볼륨을 통한 데이터 유실 방지 및 Worker 컨테이너 확장을 통한 병렬 처리 가능성(Scale-out) 이해.
+- **Error Handling**: `VARCHAR` 길이 제한 등 MySQL 엔진의 특성에 따른 디버깅과 데이터 타입 최적화 경험.
 
 ---
 
@@ -56,15 +61,12 @@
 터미널에서 아래 명령어를 입력합니다.
 ```bash
 docker compose up -d --build
+```
 
-### 2. API 테스트 (Streaming Response 확인)
-터미널에서 아래 `curl` 명령어를 입력하여 LLM의 실시간 답변을 확인합니다.
-```bash
-curl -N -X 'POST' \
-  '[http://127.0.0.1:8000/chats](http://127.0.0.1:8000/chats)' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{"user_input": "Python이 뭐야?"}'
+### 2. API 주요 엔드포인트
+- **대화 시작 (새 방 생성)**: `POST /conversations`
+- **메시지 전송 (대화하기)**: `POST /conversations/{id}/messages`
+- **대화 내역 조회**: `GET /conversations/{id}/messages`
 
 ### 3. 로그 실시간 모니터링
 - **전체 로그**: `docker compose logs -f`

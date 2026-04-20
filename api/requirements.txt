@@ -1,2 +1,5 @@
 fastapi[standard]
+sqlalchemy
+aiomysql
+cryptography
 redis
