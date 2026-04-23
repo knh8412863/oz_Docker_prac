@@ -4,7 +4,7 @@
 
 ## 📌 프로젝트 개요
 - **FastAPI**: 백엔드 API 서버를 구축하고 외부와 통신하는 '입' 역할 수행
-- - **Redis**: API 서버와 Worker 사이의 **메시지 브로커**. 요청 대기열(Queue) 관리 및 실시간 답변 전달(Pub/Sub) 수행.
+- **Redis**: API 서버와 Worker 사이의 **메시지 브로커**. 요청 대기열(Queue) 관리 및 실시간 답변 전달(Pub/Sub) 수행.
 - **MySQL 8.0**: 서비스에 필요한 데이터를 안정적으로 저장하고 관리
 - **Worker (LLM)**: `llama-cpp-python`을 이용해 로컬 LLM(Llama-3.2)을 구동하는 독립적 추론 엔진
 - **Orchestration**: Docker Compose를 통해 3개의 이기종 컨테이너를 하나의 네트워크로 통합 관리
